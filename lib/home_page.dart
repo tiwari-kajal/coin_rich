@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:coin_rich/model/data_model.dart';
 import 'package:coin_rich/provider/data_notifier.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -147,10 +148,14 @@ Future<DataModel> getData(context) async {
       final data = json.decode(response.body);
       dataModel = DataModel.fromJson(data);
     } else {
-      print('Something went wrong!');
+      if (kDebugMode) {
+        print('Something went wrong!');
+      }
     }
   } catch (e) {
-    print(e.toString());
+    if (kDebugMode) {
+      print(e.toString());
+    }
   }
   return dataModel;
 }
