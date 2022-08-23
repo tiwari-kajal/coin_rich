@@ -10,4 +10,10 @@ class DataNotifier extends ChangeNotifier {
     dataModel = await getData(context);
     notifyListeners();
   }
+
+  saveSymbol(context, String symbol) async {
+    dataModel = await getSymbolData(context, symbol.replaceAll(' ', ''));
+    notifyListeners();
+  }
+
 }

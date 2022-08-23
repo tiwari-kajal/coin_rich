@@ -9,19 +9,20 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  final String symbol;
+
+  const MyHomePage({Key? key, required this.symbol}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   void initState() {
     super.initState();
     final data = Provider.of<DataNotifier>(context, listen: false);
-    data.fetchData(context);
+    data.saveSymbol(context, widget.symbol);
   }
 
   @override
@@ -33,20 +34,58 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text("Coin Rich"),
         centerTitle: true,
       ),
-      body: data.dataModel.data != null ? Column(
-        children: [
-          symbolWidget(data.dataModel.data?.aDA?.name, data.dataModel.data?.aDA?.quote?.uSD?.percentChange24h, data.dataModel.data?.aDA?.symbol!, data.dataModel.data?.aDA?.quote?.uSD?.price, data.dataModel.data?.aDA?.cmcRank!),
-          symbolWidget(data.dataModel.data?.aTOM?.name, data.dataModel.data?.aTOM?.quote?.uSD?.percentChange24h, data.dataModel.data?.aTOM?.symbol!, data.dataModel.data?.aTOM?.quote?.uSD?.price, data.dataModel.data?.aTOM?.cmcRank!),
-          symbolWidget(data.dataModel.data?.bCH?.name, data.dataModel.data?.bCH?.quote?.uSD?.percentChange24h, data.dataModel.data?.bCH?.symbol!, data.dataModel.data?.bCH?.quote?.uSD?.price, data.dataModel.data?.bCH?.cmcRank!),
-          symbolWidget(data.dataModel.data?.bNB?.name, data.dataModel.data?.bNB?.quote?.uSD?.percentChange24h, data.dataModel.data?.bNB?.symbol!, data.dataModel.data?.bNB?.quote?.uSD?.price, data.dataModel.data?.bNB?.cmcRank!),
-          symbolWidget(data.dataModel.data?.bTC?.name, data.dataModel.data?.bTC?.quote?.uSD?.percentChange24h, data.dataModel.data?.bTC?.symbol!, data.dataModel.data?.bTC?.quote?.uSD?.price, data.dataModel.data?.bTC?.cmcRank!),
-        ],
-      ): const Center(child: CircularProgressIndicator()),
+      body: data.dataModel.data != null
+          ? Column(
+              children: [
+                data.dataModel.data?.aDA?.name != null
+                    ? symbolWidget(
+                        data.dataModel.data?.aDA?.name,
+                        data.dataModel.data?.aDA?.quote?.uSD?.percentChange24h,
+                        data.dataModel.data?.aDA?.symbol!,
+                        data.dataModel.data?.aDA?.quote?.uSD?.price,
+                        data.dataModel.data?.aDA?.cmcRank!)
+                    : const SizedBox.shrink(),
+                data.dataModel.data?.aTOM?.name != null
+                    ? symbolWidget(
+                        data.dataModel.data?.aTOM?.name,
+                        data.dataModel.data?.aTOM?.quote?.uSD?.percentChange24h,
+                        data.dataModel.data?.aTOM?.symbol!,
+                        data.dataModel.data?.aTOM?.quote?.uSD?.price,
+                        data.dataModel.data?.aTOM?.cmcRank!)
+                    : const SizedBox.shrink(),
+                data.dataModel.data?.bCH?.name != null
+                    ? symbolWidget(
+                        data.dataModel.data?.bCH?.name,
+                        data.dataModel.data?.bCH?.quote?.uSD?.percentChange24h,
+                        data.dataModel.data?.bCH?.symbol!,
+                        data.dataModel.data?.bCH?.quote?.uSD?.price,
+                        data.dataModel.data?.bCH?.cmcRank!)
+                    : const SizedBox.shrink(),
+                data.dataModel.data?.bNB?.name != null
+                    ? symbolWidget(
+                        data.dataModel.data?.bNB?.name,
+                        data.dataModel.data?.bNB?.quote?.uSD?.percentChange24h,
+                        data.dataModel.data?.bNB?.symbol!,
+                        data.dataModel.data?.bNB?.quote?.uSD?.price,
+                        data.dataModel.data?.bNB?.cmcRank!)
+                    : const SizedBox.shrink(),
+                data.dataModel.data?.bTC?.name != null
+                    ? symbolWidget(
+                        data.dataModel.data?.bTC?.name,
+                        data.dataModel.data?.bTC?.quote?.uSD?.percentChange24h,
+                        data.dataModel.data?.bTC?.symbol!,
+                        data.dataModel.data?.bTC?.quote?.uSD?.price,
+                        data.dataModel.data?.bTC?.cmcRank!)
+                    : const SizedBox.shrink(),
+              ],
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
 
-Widget symbolWidget(String? name, num? percent, String? symbol, num? symbolPrice, num? rank){
+Widget symbolWidget(
+    String? name, num? percent, String? symbol, num? symbolPrice, num? rank) {
   return Container(
     height: 80,
     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -82,7 +121,8 @@ Widget symbolWidget(String? name, num? percent, String? symbol, num? symbolPrice
                     child: Text(percent.toStringAsFixed(2),
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 12.0,)),
+                          fontSize: 12.0,
+                        )),
                   ),
                 ],
               ),
@@ -91,8 +131,7 @@ Widget symbolWidget(String? name, num? percent, String? symbol, num? symbolPrice
                 width: 80,
                 margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(4.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(4.0)),
                     color: Colors.grey,
                     boxShadow: [
                       BoxShadow(
@@ -107,23 +146,46 @@ Widget symbolWidget(String? name, num? percent, String? symbol, num? symbolPrice
             children: [
               Row(
                 children: [
-                  const Text('Price', style: TextStyle(fontSize: 12.0, color: Colors.white),),
-                  const SizedBox(width: 10.0,),
-                  Text('\$ ${symbolPrice!.toStringAsFixed(2)}', style: const TextStyle(fontSize: 12.0, color: Colors.white),),
+                  const Text(
+                    'Price',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    '\$ ${symbolPrice!.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
                 ],
               ),
               Row(
                 children: [
-                  const Text('Rank:', style: TextStyle(fontSize: 12.0, color: Colors.white),),
-                  const SizedBox(width: 10.0,),
-                  Text('$rank', style: const TextStyle(fontSize: 12.0, color: Colors.white),),
+                  const Text(
+                    'Rank:',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    '$rank',
+                    style: const TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
                 ],
               ),
               Row(
                 children: const [
-                  SizedBox(width: 10.0,),
-                  Icon(Icons.arrow_circle_right, color: Colors.yellow,),
-                  SizedBox(width: 10.0,),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Icon(
+                    Icons.arrow_circle_right,
+                    color: Colors.yellow,
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
                 ],
               ),
             ],
@@ -136,11 +198,35 @@ Widget symbolWidget(String? name, num? percent, String? symbol, num? symbolPrice
 
 Future<DataModel> getData(context) async {
   DataModel dataModel = DataModel();
-
   try {
     final response = await http.get(
         Uri.parse(
             'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=BTC,ADA,ATOM,BCH,BNB,BTC'),
+        headers: <String, String>{
+          'X-CMC_PRO_API_KEY': '27ab17d1-215f-49e5-9ca4-afd48810c149'
+        });
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      dataModel = DataModel.fromJson(data);
+    } else {
+      if (kDebugMode) {
+        print('Something went wrong!');
+      }
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print(e.toString());
+    }
+  }
+  return dataModel;
+}
+
+Future<DataModel> getSymbolData(context, String symbol) async {
+  DataModel dataModel = DataModel();
+  try {
+    final response = await http.get(
+        Uri.parse(
+            'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=$symbol'),
         headers: <String, String>{
           'X-CMC_PRO_API_KEY': '27ab17d1-215f-49e5-9ca4-afd48810c149'
         });

@@ -1,4 +1,5 @@
 import 'package:coin_rich/provider/data_notifier.dart';
+import 'package:coin_rich/search_symbol.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,9 +26,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: MyRoutes.homeRoute,
+      initialRoute: MyRoutes.searchRoute,
       routes: {
-        MyRoutes.homeRoute: (context) => const MyHomePage(),
+        MyRoutes.searchRoute: (context) => const SearchSymbol(),
       },
     );
   }
@@ -35,4 +36,5 @@ class MyApp extends StatelessWidget {
 
 class MyRoutes {
   static String homeRoute = "/home";
+  static String searchRoute = "/search";
 }
