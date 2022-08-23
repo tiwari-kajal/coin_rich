@@ -1,12 +1,16 @@
 import 'dart:convert';
 
+import 'package:coin_rich/bloc/internet_bloc.dart';
 import 'package:coin_rich/model/data_model.dart';
 import 'package:coin_rich/provider/data_notifier.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
+import 'bloc/internet_state.dart';
 
 class MyHomePage extends StatefulWidget {
   final String symbol;
@@ -77,6 +81,24 @@ class _MyHomePageState extends State<MyHomePage> {
                         data.dataModel.data?.bTC?.quote?.uSD?.price,
                         data.dataModel.data?.bTC?.cmcRank!)
                     : const SizedBox.shrink(),
+                BlocConsumer<InternetBloc, InternetState>(
+                  listener: (context, state) {
+                    if (state is InternetGainedState) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Internet connected'),
+                        backgroundColor: Colors.green,
+                      ));
+                    } else if (state is InternetLostState) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Internet not connected'),
+                        backgroundColor: Colors.red,
+                      ));
+                    }
+                  },
+                  builder: (context, state) {
+                    return const SizedBox.shrink();
+                  },
+                ),
               ],
             )
           : const Center(child: CircularProgressIndicator()),
